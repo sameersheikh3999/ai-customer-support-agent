@@ -142,7 +142,7 @@ def build_tools(
     client = api_client or CustomerAPIClient()
 
     async def search_support_docs(query: str) -> str:
-        """Search Northwind Cloud's support documentation.
+        """Search Stark's support documentation.
 
         Use this for every general question about policies, pricing, plans,
         upgrades, cancellation, refunds, billing rules, password resets, data

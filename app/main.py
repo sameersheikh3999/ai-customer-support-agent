@@ -18,7 +18,7 @@ from http import HTTPStatus
 
 from fastapi import Depends, FastAPI, Request, status
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
@@ -63,7 +63,8 @@ async def lifespan(_: FastAPI) -> AsyncIterator[None]:
 app = FastAPI(
     title="AI Customer Support Agent",
     description=(
-        "A LangChain tool-calling support assistant for a fictional SaaS company. "
+        "Trident, a LangChain tool-calling support assistant for Stark, a fictional "
+        "SaaS company. "
         "General questions are answered from a retrieved knowledge base; account "
         "questions are answered only from the internal customer API."
     ),
@@ -228,6 +229,21 @@ async def clear_session(session_id: str) -> dict[str, bool | str]:
     return {"session_id": session_id, "cleared": conversation_memory.clear(session_id)}
 
 
+class RevalidatingStaticFiles(StaticFiles):
+    """Static files that must be revalidated before reuse.
+
+    Starlette sends an ETag but no `Cache-Control`, so browsers fall back to
+    heuristic caching and happily serve a stale stylesheet after an edit.
+    `no-cache` means "ask first", not "don't cache": the ETag still turns the
+    check into a cheap 304.
+    """
+
+    def file_response(self, *args: object, **kwargs: object) -> Response:
+        response = super().file_response(*args, **kwargs)  # type: ignore[arg-type]
+        response.headers["Cache-Control"] = "no-cache"
+        return response
+
+
 # Serve the demo UI last so it does not shadow the API routes above.
 if STATIC_DIR.is_dir():
-    app.mount("/", StaticFiles(directory=STATIC_DIR, html=True), name="ui")
+    app.mount("/", RevalidatingStaticFiles(directory=STATIC_DIR, html=True), name="ui")

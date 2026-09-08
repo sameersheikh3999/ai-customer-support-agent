@@ -1,4 +1,4 @@
-# AI Customer Support Agent
+# Trident — AI Customer Support Agent
 
 [![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115%2B-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
@@ -7,7 +7,7 @@
 [![Tests](https://img.shields.io/badge/tests-51%20passing-3fb950)](#tests)
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-A production-shaped customer support assistant for a fictional SaaS company, **Northwind Cloud**.
+**Trident** is a production-shaped customer support assistant for **Stark**, a fictional SaaS company.
 It answers general support questions from a retrieved knowledge base, and answers account-specific
 questions **only** by calling an internal customer REST API through LangChain tools — never from the
 model's own memory.
@@ -157,7 +157,7 @@ sequenceDiagram
 > *The tool returns `{"error": "backend_unavailable", ...}` instead of raising*
 >
 > **Assistant:** I'm unable to retrieve your billing information right now. Please try again in a
-> few minutes, or email support@northwindcloud.example if it's urgent.
+> few minutes, or email support@stark.example if it's urgent.
 >
 > `degraded: false` — the agent handled it; the API still returned a clean 200.
 

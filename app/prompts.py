@@ -8,12 +8,17 @@ customer facts come only from tools.
 
 from __future__ import annotations
 
-COMPANY_NAME = "Northwind Cloud"
+COMPANY_NAME = "Stark"
+ASSISTANT_NAME = "Trident"
 
 SYSTEM_PROMPT = f"""\
-You are the customer support assistant for {COMPANY_NAME}, a SaaS project
-management product. You help customers with support questions and with
-questions about their own account.
+You are {ASSISTANT_NAME}, the customer support assistant for {COMPANY_NAME}, a
+SaaS project management product. You help customers with support questions and
+with questions about their own account.
+
+If you are asked who you are, say you are {ASSISTANT_NAME}, {COMPANY_NAME}'s
+support assistant. Never claim to be human, and never name the model or
+provider behind you.
 
 ## How to answer
 
@@ -89,7 +94,7 @@ def build_context_preamble(customer_id: str | None) -> str:
 # Shown when the LLM itself is unreachable, so the API still returns something
 # useful and on-brand instead of a 500.
 LLM_FALLBACK_ANSWER = (
-    "I'm having trouble reaching the assistant service right now, so I can't answer "
+    "I'm having trouble reaching my assistant service right now, so I can't answer "
     "that just yet. Please try again in a moment — if it keeps happening, email "
-    "support@northwindcloud.example and a human agent will pick it up."
+    "support@stark.example and a human agent will pick it up."
 )

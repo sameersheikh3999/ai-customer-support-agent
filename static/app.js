@@ -247,7 +247,7 @@
     } catch (error) {
       typing.remove();
       console.error(error);
-      const detail = "Couldn't reach the assistant. Check that the server is running.";
+      const detail = "Couldn't reach Trident. Check that the server is running.";
       addMessage("error", detail);
       showBanner(detail, "error");
     } finally {

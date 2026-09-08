@@ -3,13 +3,13 @@
     "id": "kb_password_reset",
     "title": "Resetting your password",
     "tags": ["password", "reset", "login", "sign in", "locked out", "forgot", "credentials", "2fa"],
-    "content": "To reset your Northwind Cloud password: 1) Go to the sign-in page and select 'Forgot password'. 2) Enter the email address on your account. 3) We send a reset link that stays valid for 30 minutes. 4) Open the link and choose a new password of at least 12 characters. If the email does not arrive within 5 minutes, check your spam folder and confirm you used the address on the account. Accounts with two-factor authentication enabled will also be asked for a 6-digit code from the authenticator app. After five failed sign-in attempts an account is locked for 15 minutes."
+    "content": "To reset your Stark password: 1) Go to the sign-in page and select 'Forgot password'. 2) Enter the email address on your account. 3) We send a reset link that stays valid for 30 minutes. 4) Open the link and choose a new password of at least 12 characters. If the email does not arrive within 5 minutes, check your spam folder and confirm you used the address on the account. Accounts with two-factor authentication enabled will also be asked for a 6-digit code from the authenticator app. After five failed sign-in attempts an account is locked for 15 minutes."
   },
   {
     "id": "kb_plans",
     "title": "Subscription plans and pricing",
     "tags": ["plans", "pricing", "starter", "pro", "enterprise", "tiers", "cost", "seats", "features"],
-    "content": "Northwind Cloud offers three plans, billed monthly per workspace. Starter costs 19 USD per month and includes 3 seats, 10 GB storage and email support. Pro costs 49 USD per month and includes 15 seats, 250 GB storage, the reporting suite, the public API and priority email support. Enterprise starts at 249 USD per month and adds unlimited seats, SSO/SAML, audit logs, a sandbox environment and a named customer success manager. Annual billing is available on every plan at a 15 percent discount."
+    "content": "Stark offers three plans, billed monthly per workspace. Starter costs 19 USD per month and includes 3 seats, 10 GB storage and email support. Pro costs 49 USD per month and includes 15 seats, 250 GB storage, the reporting suite, the public API and priority email support. Enterprise starts at 249 USD per month and adds unlimited seats, SSO/SAML, audit logs, a sandbox environment and a named customer success manager. Annual billing is available on every plan at a 15 percent discount."
   },
   {
     "id": "kb_upgrade",
@@ -45,6 +45,6 @@
     "id": "kb_support_hours",
     "title": "Contacting support",
     "tags": ["support", "contact", "hours", "response time", "sla", "human", "agent", "escalate"],
-    "content": "Email support@northwindcloud.example is available 24 hours a day, Monday to Friday. Target first-response times are 24 business hours on Starter, 8 business hours on Pro and 1 hour on Enterprise for urgent issues. Enterprise customers also get a private Slack channel and a named customer success manager. To reach a human agent from this assistant, ask to be transferred and we will open a ticket with the conversation attached."
+    "content": "Email support@stark.example is available 24 hours a day, Monday to Friday. Target first-response times are 24 business hours on Starter, 8 business hours on Pro and 1 hour on Enterprise for urgent issues. Enterprise customers also get a private Slack channel and a named customer success manager. To reach a human agent from Trident, ask to be transferred and we will open a ticket with the conversation attached."
   }
 ]
