@@ -4,7 +4,7 @@
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115%2B-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
 [![LangChain](https://img.shields.io/badge/LangChain-0.3-1C3C3C)](https://python.langchain.com/)
 [![OpenAI](https://img.shields.io/badge/OpenAI-tool%20calling-412991?logo=openai&logoColor=white)](https://platform.openai.com/)
-[![Tests](https://img.shields.io/badge/tests-50%20passing-3fb950)](#tests)
+[![Tests](https://img.shields.io/badge/tests-51%20passing-3fb950)](#tests)
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
 A production-shaped customer support assistant for a fictional SaaS company, **Northwind Cloud**.
@@ -109,7 +109,7 @@ sequenceDiagram
 | **Conversation memory** | Bounded, TTL'd, per-`session_id` history so follow-ups resolve. |
 | **Error handling** | Timeouts, 404s, 5xx, malformed JSON, model outages and bad input all handled distinctly. |
 | **Hallucination prevention** | Account facts come only from tool output; tools are scoped to the signed-in customer. |
-| **Tested offline** | 50 tests, no API credits spent — the model is replaced by a scripted fake. |
+| **Tested offline** | 51 tests, no API credits spent — the model is replaced by a scripted fake. |
 
 ---
 
@@ -230,12 +230,48 @@ The ones worth knowing:
 | Variable | Default | Purpose |
 | --- | --- | --- |
 | `OPENAI_API_KEY` | — | **Required.** Without it, `/chat` returns 503. |
-| `OPENAI_MODEL` | `gpt-4o-mini` | Any tool-calling OpenAI model. |
+| `OPENAI_MODEL` | `gpt-4o-mini` | Any model that supports tool calling. |
+| `OPENAI_BASE_URL` | *(unset)* | Point at an OpenAI-compatible provider such as Groq. See [Using a different provider](#using-a-different-provider). |
 | `BACKEND_BASE_URL` | `http://127.0.0.1:8000` | Where the customer API lives. |
 | `BACKEND_TIMEOUT_SECONDS` | `5` | Per-request timeout for account lookups. |
 | `BACKEND_FAILURE_MODE` | `none` | `timeout` \| `server_error` \| `malformed` — makes the backend misbehave so you can watch the error handling work. |
 | `AGENT_MAX_ITERATIONS` | `4` | Cap on tool-call rounds per turn. |
 | `HISTORY_MAX_MESSAGES` | `12` | Messages kept per session. |
+
+### Using a different provider
+
+You don't have to use OpenAI. Any provider with an OpenAI-compatible endpoint works by changing
+three environment variables — no code change, because `ChatOpenAI` simply talks to a different
+base URL.
+
+**Groq** (fast and has a free tier):
+
+```dotenv
+OPENAI_API_KEY=gsk_your_groq_key
+OPENAI_BASE_URL=https://api.groq.com/openai/v1
+OPENAI_MODEL=llama-3.3-70b-versatile
+```
+
+**OpenRouter:**
+
+```dotenv
+OPENAI_API_KEY=sk-or-your_key
+OPENAI_BASE_URL=https://openrouter.ai/api/v1
+OPENAI_MODEL=meta-llama/llama-3.3-70b-instruct
+```
+
+**A local server** (Ollama, vLLM, LM Studio) — the key is ignored but must be non-empty:
+
+```dotenv
+OPENAI_API_KEY=local
+OPENAI_BASE_URL=http://127.0.0.1:11434/v1
+OPENAI_MODEL=llama3.3
+```
+
+> **The model must support tool calling.** This agent is built on function calling — a model
+> without it will chat, but will never fetch account data, which is the whole point. Smaller models
+> also follow the "never invent account details" rules less reliably than larger ones, so if you
+> switch providers, re-run the example conversations and check the `tools_used` field is populated.
 
 ---
 
@@ -434,7 +470,7 @@ pytest
 ```
 
 ```
-50 passed in 2.87s
+51 passed in 3.57s
 ```
 
 **No OpenAI credits are spent.** `tests/conftest.py` defines `FakeToolCallingChatModel`, a

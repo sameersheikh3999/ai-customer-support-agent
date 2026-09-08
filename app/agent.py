@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass, field
+from typing import Any
 
 from langchain.agents import AgentExecutor, create_tool_calling_agent
 from langchain_core.language_models import BaseChatModel
@@ -53,7 +54,11 @@ class AgentResult:
 
 
 def create_chat_model(settings: Settings | None = None) -> BaseChatModel:
-    """Build the OpenAI chat model from settings.
+    """Build the chat model from settings.
+
+    Defaults to OpenAI. Setting `OPENAI_BASE_URL` points the same client at any
+    OpenAI-compatible endpoint — Groq, OpenRouter, Together, or a local server —
+    provided the chosen model supports tool calling, which this agent requires.
 
     Raises:
         LLMUnavailableError: if no API key is configured.
@@ -61,13 +66,18 @@ def create_chat_model(settings: Settings | None = None) -> BaseChatModel:
     settings = settings or get_settings()
     if not settings.llm_configured:
         raise LLMUnavailableError("OPENAI_API_KEY is not set")
-    return ChatOpenAI(
-        model=settings.openai_model,
-        temperature=settings.openai_temperature,
-        timeout=settings.openai_timeout_seconds,
-        max_retries=settings.openai_max_retries,
-        api_key=settings.openai_api_key,
-    )
+
+    options: dict[str, Any] = {
+        "model": settings.openai_model,
+        "temperature": settings.openai_temperature,
+        "timeout": settings.openai_timeout_seconds,
+        "max_retries": settings.openai_max_retries,
+        "api_key": settings.openai_api_key,
+    }
+    if settings.openai_base_url:
+        options["base_url"] = settings.openai_base_url
+        logger.info("Using OpenAI-compatible endpoint at %s", settings.openai_base_url)
+    return ChatOpenAI(**options)
 
 
 def _build_prompt(customer_id: str | None) -> ChatPromptTemplate:

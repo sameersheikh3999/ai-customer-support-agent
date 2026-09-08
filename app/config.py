@@ -41,6 +41,9 @@ class Settings(BaseModel):
     # --- OpenAI -----------------------------------------------------------
     openai_api_key: str = Field(default="", repr=False)
     openai_model: str = "gpt-4o-mini"
+    # Leave empty for OpenAI itself. Set it to use any OpenAI-compatible
+    # endpoint (Groq, OpenRouter, Together, a local server) with the same key.
+    openai_base_url: str = ""
     openai_temperature: float = 0.0
     openai_timeout_seconds: int = 30
     openai_max_retries: int = 2
@@ -72,6 +75,7 @@ def get_settings() -> Settings:
     return Settings(
         openai_api_key=os.getenv("OPENAI_API_KEY", ""),
         openai_model=os.getenv("OPENAI_MODEL", "gpt-4o-mini"),
+        openai_base_url=os.getenv("OPENAI_BASE_URL", "").strip(),
         openai_temperature=float(os.getenv("OPENAI_TEMPERATURE", "0") or 0),
         openai_timeout_seconds=_env_int("OPENAI_TIMEOUT_SECONDS", 30),
         openai_max_retries=_env_int("OPENAI_MAX_RETRIES", 2),

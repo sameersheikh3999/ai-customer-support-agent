@@ -5,9 +5,11 @@ from __future__ import annotations
 import json
 from collections.abc import Callable
 
+import pytest
 from fastapi.testclient import TestClient
 
-from app.agent import SupportAgent
+from app.agent import SupportAgent, create_chat_model
+from app.config import get_settings
 from app.memory import conversation_memory
 from tests.conftest import final_message, tool_call_message
 
@@ -175,3 +177,22 @@ def test_signed_in_customer_is_stated_in_the_system_prompt(
     system_text = agent._chat_model.received[0][0].content  # noqa: SLF001
     assert "cust_002" in system_text
     assert "Never invent" in system_text or "NEVER invent" in system_text
+
+
+def test_base_url_is_only_set_for_compatible_providers(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """An OpenAI-compatible endpoint (Groq, OpenRouter, ...) is a config change."""
+    monkeypatch.setenv("OPENAI_API_KEY", "test-key-not-real")
+    monkeypatch.setenv("OPENAI_MODEL", "llama-3.3-70b-versatile")
+    monkeypatch.setenv("OPENAI_BASE_URL", "https://api.groq.com/openai/v1")
+    get_settings.cache_clear()
+
+    model = create_chat_model()
+    assert model.model_name == "llama-3.3-70b-versatile"
+    assert str(model.openai_api_base) == "https://api.groq.com/openai/v1"
+
+    # Unset, the client falls back to OpenAI's own endpoint.
+    monkeypatch.delenv("OPENAI_BASE_URL")
+    get_settings.cache_clear()
+    assert create_chat_model().openai_api_base is None
