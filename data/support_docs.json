@@ -1,0 +1,50 @@
+[
+  {
+    "id": "kb_password_reset",
+    "title": "Resetting your password",
+    "tags": ["password", "reset", "login", "sign in", "locked out", "forgot", "credentials", "2fa"],
+    "content": "To reset your Northwind Cloud password: 1) Go to the sign-in page and select 'Forgot password'. 2) Enter the email address on your account. 3) We send a reset link that stays valid for 30 minutes. 4) Open the link and choose a new password of at least 12 characters. If the email does not arrive within 5 minutes, check your spam folder and confirm you used the address on the account. Accounts with two-factor authentication enabled will also be asked for a 6-digit code from the authenticator app. After five failed sign-in attempts an account is locked for 15 minutes."
+  },
+  {
+    "id": "kb_plans",
+    "title": "Subscription plans and pricing",
+    "tags": ["plans", "pricing", "starter", "pro", "enterprise", "tiers", "cost", "seats", "features"],
+    "content": "Northwind Cloud offers three plans, billed monthly per workspace. Starter costs 19 USD per month and includes 3 seats, 10 GB storage and email support. Pro costs 49 USD per month and includes 15 seats, 250 GB storage, the reporting suite, the public API and priority email support. Enterprise starts at 249 USD per month and adds unlimited seats, SSO/SAML, audit logs, a sandbox environment and a named customer success manager. Annual billing is available on every plan at a 15 percent discount."
+  },
+  {
+    "id": "kb_upgrade",
+    "title": "Upgrading or downgrading your plan",
+    "tags": ["upgrade", "downgrade", "change plan", "switch plan", "proration", "billing period"],
+    "content": "You can change plans at any time from Settings > Billing > Change plan. Upgrades take effect immediately and we charge a prorated amount for the remainder of the current billing period; the new full price applies from the next renewal date. Downgrades take effect at the end of the current billing period so you keep paid features until then. Workspace owners and billing admins can change plans; ordinary members cannot. If a downgrade would leave you with more seats than the target plan allows, remove the extra members first."
+  },
+  {
+    "id": "kb_cancellation",
+    "title": "Cancellation policy",
+    "tags": ["cancel", "cancellation", "terminate", "close account", "end subscription", "delete account"],
+    "content": "You may cancel at any time from Settings > Billing > Cancel subscription. Cancellation stops the next renewal; the subscription stays active until the end of the period you have already paid for, and we do not issue partial refunds for the unused remainder of a monthly term. After the period ends the workspace becomes read-only for 30 days, then data is scheduled for deletion. You can reactivate at any point during the 30-day read-only window without losing data. Annual plans cancelled within 14 days of purchase are refunded in full."
+  },
+  {
+    "id": "kb_refunds",
+    "title": "Refund policy",
+    "tags": ["refund", "money back", "chargeback", "reimbursement", "guarantee"],
+    "content": "New customers can request a full refund within 14 days of their first payment, no questions asked. Beyond 14 days, monthly charges are non-refundable, but we do refund duplicate charges and billing errors in full. Annual plans are refunded on a prorated basis if cancelled because of a documented service failure. Refunds are returned to the original payment method and typically appear within 5 to 10 business days. Request a refund from Settings > Billing > Request refund, or by replying to any invoice email."
+  },
+  {
+    "id": "kb_billing_faq",
+    "title": "Billing FAQ",
+    "tags": ["billing", "invoice", "receipt", "payment", "card declined", "past due", "vat", "tax", "balance"],
+    "content": "Invoices are issued on the renewal date and emailed to the billing contact; every invoice is also downloadable as a PDF from Settings > Billing > Invoices. We accept major credit cards worldwide, and Enterprise customers may pay by bank transfer on NET 30 terms. If a payment fails we retry after 3 days and again after 7 days; the account is marked past due in the meantime and stays fully usable, but access is suspended if the balance is unpaid after 21 days. Add a VAT or GST number under Settings > Billing > Tax details and it will appear on all future invoices."
+  },
+  {
+    "id": "kb_data_export",
+    "title": "Exporting your data",
+    "tags": ["export", "data", "backup", "download", "gdpr", "csv"],
+    "content": "Workspace owners can export all workspace data from Settings > Data > Export. The export runs in the background and we email a download link when it is ready, usually within an hour. Exports are delivered as a ZIP file containing CSV files plus any uploaded attachments, and the link expires after 7 days. Exports are available on every plan, including during the 30-day read-only window after a cancellation."
+  },
+  {
+    "id": "kb_support_hours",
+    "title": "Contacting support",
+    "tags": ["support", "contact", "hours", "response time", "sla", "human", "agent", "escalate"],
+    "content": "Email support@northwindcloud.example is available 24 hours a day, Monday to Friday. Target first-response times are 24 business hours on Starter, 8 business hours on Pro and 1 hour on Enterprise for urgent issues. Enterprise customers also get a private Slack channel and a named customer success manager. To reach a human agent from this assistant, ask to be transferred and we will open a ticket with the conversation attached."
+  }
+]

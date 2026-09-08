@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Northwind Cloud — Support Assistant</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="app">
+      <header class="app__header">
+        <div class="brand">
+          <span class="brand__mark" aria-hidden="true">N</span>
+          <div>
+            <h1 class="brand__name">Northwind Cloud</h1>
+            <p class="brand__sub">AI Support Assistant</p>
+          </div>
+        </div>
+
+        <div class="controls">
+          <label class="field">
+            <span class="field__label">Signed in as</span>
+            <select id="customer-select" class="field__input">
+              <option value="">Not signed in</option>
+            </select>
+          </label>
+          <button id="reset-button" class="button button--ghost" type="button">
+            New chat
+          </button>
+        </div>
+      </header>
+
+      <div id="status-banner" class="banner" role="status" hidden></div>
+
+      <section id="messages" class="messages" aria-live="polite" aria-label="Conversation">
+        <article class="message message--assistant">
+          <div class="message__bubble">
+            Hi! I'm the Northwind Cloud support assistant. Ask me about plans, billing
+            or cancellations — or pick a customer above and ask about your account.
+          </div>
+        </article>
+      </section>
+
+      <div class="suggestions" id="suggestions">
+        <button type="button" data-prompt="How do I reset my password?">Reset password</button>
+        <button type="button" data-prompt="What is your cancellation policy?">Cancellation policy</button>
+        <button type="button" data-prompt="What plan am I currently on?">My plan</button>
+        <button type="button" data-prompt="What is my outstanding balance?">My balance</button>
+      </div>
+
+      <form id="chat-form" class="composer" autocomplete="off">
+        <input
+          id="message-input"
+          class="composer__input"
+          type="text"
+          name="message"
+          placeholder="Ask a support question…"
+          maxlength="2000"
+          required
+          aria-label="Your message"
+        />
+        <button id="send-button" class="button button--primary" type="submit">
+          <span class="button__label">Send</span>
+        </button>
+      </form>
+
+      <footer class="app__footer">
+        Demo project — fictional company, fictional customers. Answers about an account
+        come only from the internal customer API.
+      </footer>
+    </main>
+
+    <script src="/app.js"></script>
+  </body>
+</html>

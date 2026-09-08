@@ -1,0 +1,73 @@
+{
+  "cust_001": {
+    "customer_id": "cust_001",
+    "name": "Sarah Khan",
+    "email": "sarah.khan@example.com",
+    "subscription": "Pro",
+    "monthly_price": 49,
+    "currency": "USD",
+    "outstanding_balance": 0,
+    "renewal_date": "2026-10-15",
+    "account_status": "active",
+    "signup_date": "2024-03-02",
+    "seats": 10,
+    "payment_method": "Visa ending 4242",
+    "recent_invoices": [
+      {"invoice_id": "inv_2026_09", "date": "2026-09-15", "amount": 49, "status": "paid"},
+      {"invoice_id": "inv_2026_08", "date": "2026-08-15", "amount": 49, "status": "paid"}
+    ]
+  },
+  "cust_002": {
+    "customer_id": "cust_002",
+    "name": "Diego Marino",
+    "email": "diego.marino@example.com",
+    "subscription": "Starter",
+    "monthly_price": 19,
+    "currency": "USD",
+    "outstanding_balance": 19,
+    "renewal_date": "2026-09-28",
+    "account_status": "past_due",
+    "signup_date": "2025-11-19",
+    "seats": 2,
+    "payment_method": "Mastercard ending 8801",
+    "recent_invoices": [
+      {"invoice_id": "inv_2026_09", "date": "2026-09-28", "amount": 19, "status": "unpaid"},
+      {"invoice_id": "inv_2026_08", "date": "2026-08-28", "amount": 19, "status": "paid"}
+    ]
+  },
+  "cust_003": {
+    "customer_id": "cust_003",
+    "name": "Amara Okafor",
+    "email": "amara.okafor@example.com",
+    "subscription": "Enterprise",
+    "monthly_price": 249,
+    "currency": "USD",
+    "outstanding_balance": 0,
+    "renewal_date": "2027-01-01",
+    "account_status": "active",
+    "signup_date": "2023-06-11",
+    "seats": 120,
+    "payment_method": "Invoiced (NET 30)",
+    "recent_invoices": [
+      {"invoice_id": "inv_2026_09", "date": "2026-09-01", "amount": 249, "status": "paid"},
+      {"invoice_id": "inv_2026_08", "date": "2026-08-01", "amount": 249, "status": "paid"}
+    ]
+  },
+  "cust_004": {
+    "customer_id": "cust_004",
+    "name": "Lena Vogt",
+    "email": "lena.vogt@example.com",
+    "subscription": "Pro",
+    "monthly_price": 49,
+    "currency": "USD",
+    "outstanding_balance": 0,
+    "renewal_date": "2026-09-20",
+    "account_status": "cancelled",
+    "signup_date": "2025-01-08",
+    "seats": 5,
+    "payment_method": "Visa ending 1017",
+    "recent_invoices": [
+      {"invoice_id": "inv_2026_08", "date": "2026-08-20", "amount": 49, "status": "paid"}
+    ]
+  }
+}

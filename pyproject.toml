@@ -1,0 +1,30 @@
+[project]
+name = "ai-customer-support-agent"
+version = "1.0.0"
+description = "A LangChain + FastAPI customer support agent with tool calling, RAG and hardened error handling."
+requires-python = ">=3.11"
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+addopts = "-q --strict-markers"
+filterwarnings = ["ignore::DeprecationWarning"]
+
+[tool.ruff]
+line-length = 96
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["F", "E", "W", "I", "UP", "B", "SIM", "ARG", "C4", "RET"]
+ignore = [
+  # `Depends(...)` in a parameter default is the standard FastAPI idiom.
+  "B008",
+  # Reads better as prose than as a 60-element list literal.
+  "SIM905",
+]
+
+[tool.ruff.lint.per-file-ignores]
+# Test doubles must match interfaces they do not use every argument of.
+"tests/*" = ["ARG002"]
