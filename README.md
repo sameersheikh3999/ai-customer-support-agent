@@ -401,8 +401,8 @@ Capture these after running the app locally and drop them into `docs/screenshots
 | File to save | What to capture |
 | --- | --- |
 | `docs/screenshots/01-chat-ui.png` | The chat UI on first load, with the customer selector visible. |
-| `docs/screenshots/02-general-question.png` | A knowledge-base answer showing the `📄 kb_...` source chip. |
-| `docs/screenshots/03-account-question.png` | An account answer showing the `🔧 get_subscription_details` tool chip. |
+| `docs/screenshots/02-general-question.png` | A knowledge-base answer showing its `kb_...` source chip. |
+| `docs/screenshots/03-account-question.png` | An account answer showing the `get_subscription_details` tool chip. |
 | `docs/screenshots/04-followup.png` | A two-turn exchange where "when does it renew?" resolves correctly. |
 | `docs/screenshots/05-error-state.png` | The error banner with `BACKEND_FAILURE_MODE=server_error` set. |
 | `docs/screenshots/06-swagger.png` | The `/docs` OpenAPI page listing all endpoints. |
@@ -440,7 +440,7 @@ ai-customer-support-agent/
 ├── static/
 │   ├── index.html          # Chat UI
 │   ├── app.js              # Chat client: sessions, loading and error states
-│   └── styles.css          # Light/dark styling
+│   └── styles.css          # Design tokens, light/dark, responsive
 ├── tests/
 │   ├── conftest.py             # Fixtures + the scripted fake chat model
 │   ├── test_chat.py            # /chat, tool routing, memory, prompt contents
@@ -569,6 +569,14 @@ An exception inside the agent loop aborts the turn and produces a 500. A structu
 `{"error": "backend_unavailable", "message": "..."}` gives the model something to *say* — the
 result is an assistant that tells the user billing is temporarily unavailable and still answers the
 general half of their question.
+
+**Why the interface shows its work.**
+Every assistant reply carries chips naming the tools that ran and the knowledge-base
+articles that were cited. That is not decoration: it is the fastest way for a reviewer to
+confirm the agent actually called the customer API rather than inventing an answer, and it
+turns the anti-hallucination design into something visible in a screenshot. The UI is plain
+HTML, CSS and JavaScript with no build step, so the repository stays clonable and runnable
+in two commands.
 
 **Why conversation memory is in-process.**
 Follow-ups like "when does it renew?" need the previous turns, and a dict keyed by `session_id`

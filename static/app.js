@@ -1,8 +1,9 @@
 /**
- * Minimal chat client for the AI Customer Support Agent demo.
+ * Chat client for the AI Customer Support Agent demo.
  *
- * Responsibilities: keep one session id, post to /chat, render messages with
- * the tools the agent used, and show explicit loading and error states.
+ * Keeps one session id, posts to /chat, and renders each reply with the tools
+ * and knowledge-base articles behind it. Loading and error states are explicit,
+ * and every status change is announced to assistive tech.
  */
 (() => {
   "use strict";
@@ -11,12 +12,19 @@
     form: document.getElementById("chat-form"),
     input: document.getElementById("message-input"),
     send: document.getElementById("send-button"),
-    messages: document.getElementById("messages"),
+    thread: document.getElementById("messages"),
+    empty: document.getElementById("empty-state"),
     customer: document.getElementById("customer-select"),
     reset: document.getElementById("reset-button"),
     banner: document.getElementById("status-banner"),
+    bannerText: document.getElementById("status-text"),
+    bannerIcon: document.querySelector("#status-banner use"),
     suggestions: document.getElementById("suggestions"),
+    count: document.getElementById("char-count"),
   };
+
+  const MAX_CHARS = 2000;
+  const COUNT_VISIBLE_FROM = 1800;
 
   let sessionId = newSessionId();
   let pending = false;
@@ -25,9 +33,21 @@
     return `session_${Math.random().toString(36).slice(2, 12)}`;
   }
 
+  function svgIcon(id, className = "icon") {
+    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("class", className);
+    svg.setAttribute("aria-hidden", "true");
+    const use = document.createElementNS("http://www.w3.org/2000/svg", "use");
+    use.setAttribute("href", `#${id}`);
+    svg.appendChild(use);
+    return svg;
+  }
+
+  /** Show the status banner. `variant` is "error" | "info" | "warn". */
   function showBanner(text, variant = "error") {
-    el.banner.textContent = text;
-    el.banner.className = variant === "info" ? "banner banner--info" : "banner";
+    el.bannerText.textContent = text;
+    el.banner.className = variant === "error" ? "banner" : `banner banner--${variant}`;
+    el.bannerIcon.setAttribute("href", variant === "error" ? "#i-alert" : "#i-info");
     el.banner.hidden = false;
   }
 
@@ -35,51 +55,126 @@
     el.banner.hidden = true;
   }
 
-  /** Append a message bubble. `tags` render as small chips under the text. */
-  function addMessage(role, text, tags = []) {
-    const article = document.createElement("article");
-    article.className = `message message--${role}`;
+  function clockTime() {
+    return new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  }
+
+  /**
+   * Append a message.
+   *
+   * @param {"user"|"assistant"|"error"} role
+   * @param {string} text
+   * @param {{tools?: string[], sources?: string[]}} provenance
+   */
+  function addMessage(role, text, provenance = {}) {
+    el.empty?.remove();
+
+    const wrapper = document.createElement("article");
+    wrapper.className = `msg msg--${role}`;
+
+    const avatarIcon = { user: "i-user", error: "i-alert", assistant: "i-spark" }[role];
+    const avatar = document.createElement("span");
+    avatar.className = "msg__avatar";
+    avatar.appendChild(svgIcon(avatarIcon));
+    wrapper.appendChild(avatar);
+
+    const body = document.createElement("div");
+    body.className = "msg__body";
 
     const bubble = document.createElement("div");
-    bubble.className = "message__bubble";
+    bubble.className = "msg__bubble";
     bubble.textContent = text; // textContent, never innerHTML: no markup injection
-    article.appendChild(bubble);
+    body.appendChild(bubble);
 
-    if (tags.length) {
-      const meta = document.createElement("div");
-      meta.className = "message__meta";
-      for (const tag of tags) {
-        const chip = document.createElement("span");
-        chip.className = tag.kind === "source" ? "tag tag--source" : "tag";
-        chip.textContent = tag.label;
-        meta.appendChild(chip);
-      }
-      article.appendChild(meta);
+    const meta = document.createElement("div");
+    meta.className = "msg__meta";
+
+    const time = document.createElement("span");
+    time.className = "msg__time";
+    time.textContent = clockTime();
+    meta.appendChild(time);
+
+    for (const tool of provenance.tools ?? []) {
+      meta.appendChild(makeChip("i-tool", tool, "chip chip--tool", `Tool called: ${tool}`));
+    }
+    for (const source of provenance.sources ?? []) {
+      meta.appendChild(makeChip("i-doc", source, "chip", `Knowledge-base article: ${source}`));
     }
 
-    el.messages.appendChild(article);
-    el.messages.scrollTop = el.messages.scrollHeight;
-    return article;
+    body.appendChild(meta);
+    wrapper.appendChild(body);
+    el.thread.appendChild(wrapper);
+    scrollToEnd();
+    return wrapper;
+  }
+
+  function makeChip(iconId, label, className, title) {
+    const chip = document.createElement("span");
+    chip.className = className;
+    chip.title = title;
+    chip.appendChild(svgIcon(iconId));
+    chip.appendChild(document.createTextNode(label));
+    return chip;
   }
 
   function addTypingIndicator() {
-    const article = document.createElement("article");
-    article.className = "message message--assistant";
-    article.innerHTML =
-      '<div class="message__bubble"><span class="dots"><span></span><span></span><span></span></span></div>';
-    el.messages.appendChild(article);
-    el.messages.scrollTop = el.messages.scrollHeight;
-    return article;
+    const wrapper = document.createElement("article");
+    wrapper.className = "msg msg--assistant";
+
+    const avatar = document.createElement("span");
+    avatar.className = "msg__avatar";
+    avatar.appendChild(svgIcon("i-spark"));
+
+    const bubble = document.createElement("div");
+    bubble.className = "msg__bubble";
+    const dots = document.createElement("span");
+    dots.className = "dots";
+    dots.append(
+      document.createElement("span"),
+      document.createElement("span"),
+      document.createElement("span")
+    );
+    bubble.appendChild(dots);
+
+    const body = document.createElement("div");
+    body.className = "msg__body";
+    body.appendChild(bubble);
+
+    wrapper.append(avatar, body);
+    el.thread.appendChild(wrapper);
+    scrollToEnd();
+    return wrapper;
+  }
+
+  function scrollToEnd() {
+    el.thread.scrollTop = el.thread.scrollHeight;
   }
 
   function setPending(value) {
     pending = value;
     el.send.disabled = value;
     el.input.disabled = value;
-    el.send.querySelector(".button__label").textContent = value ? "Sending…" : "Send";
+    el.send.classList.toggle("is-busy", value);
+    // aria-busy tells screen readers work is in flight without a visual-only cue.
+    el.thread.setAttribute("aria-busy", String(value));
   }
 
-  /** Populate the customer selector from the mock backend. */
+  /** Grow the textarea with its content, up to the CSS max-height. */
+  function autoGrow() {
+    el.input.style.height = "auto";
+    el.input.style.height = `${Math.min(el.input.scrollHeight, 148)}px`;
+  }
+
+  function updateCount() {
+    const used = el.input.value.length;
+    const show = used >= COUNT_VISIBLE_FROM;
+    el.count.hidden = !show;
+    if (show) {
+      el.count.textContent = `${MAX_CHARS - used}`;
+      el.count.classList.toggle("composer__count--limit", used >= MAX_CHARS);
+    }
+  }
+
   async function loadCustomers() {
     try {
       const response = await fetch("/api/customers");
@@ -88,12 +183,12 @@
       for (const customer of customers) {
         const option = document.createElement("option");
         option.value = customer.customer_id;
-        option.textContent = `${customer.name} · ${customer.subscription} (${customer.customer_id})`;
+        option.textContent = `${customer.name} · ${customer.subscription}`;
         el.customer.appendChild(option);
       }
     } catch (error) {
       console.error("Could not load customers", error);
-      showBanner("Could not load the demo customer list. Account questions may fail.");
+      showBanner("Couldn't load the demo customer list. Account questions may fail.", "warn");
     }
   }
 
@@ -108,11 +203,14 @@
   }
 
   async function sendMessage(text) {
-    if (pending || !text.trim()) return;
+    const message = text.trim();
+    if (pending || !message) return;
 
     hideBanner();
-    addMessage("user", text);
+    addMessage("user", message);
     el.input.value = "";
+    autoGrow();
+    updateCount();
     setPending(true);
     const typing = addTypingIndicator();
 
@@ -121,7 +219,7 @@
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          message: text,
+          message,
           customer_id: el.customer.value || null,
           session_id: sessionId,
         }),
@@ -132,28 +230,26 @@
       if (!response.ok) {
         const detail = await readError(response);
         addMessage("error", detail);
-        showBanner(detail);
+        showBanner(detail, "error");
         return;
       }
 
       const data = await response.json();
       sessionId = data.session_id || sessionId;
-
-      const tags = [
-        ...(data.tools_used || []).map((name) => ({ kind: "tool", label: `🔧 ${name}` })),
-        ...(data.sources || []).map((id) => ({ kind: "source", label: `📄 ${id}` })),
-      ];
-      addMessage("assistant", data.answer, tags);
+      addMessage("assistant", data.answer, {
+        tools: data.tools_used,
+        sources: data.sources,
+      });
 
       if (data.degraded) {
-        showBanner("A backend service is unavailable — that answer is a fallback.", "info");
+        showBanner("A backend service is unavailable — that answer is a fallback.", "warn");
       }
     } catch (error) {
       typing.remove();
       console.error(error);
-      const detail = "Could not reach the assistant. Check that the server is running.";
+      const detail = "Couldn't reach the assistant. Check that the server is running.";
       addMessage("error", detail);
-      showBanner(detail);
+      showBanner(detail, "error");
     } finally {
       setPending(false);
       el.input.focus();
@@ -165,30 +261,48 @@
     sendMessage(el.input.value);
   });
 
+  // Enter sends; Shift+Enter inserts a newline. IME composition must not send.
+  el.input.addEventListener("keydown", (event) => {
+    if (event.key === "Enter" && !event.shiftKey && !event.isComposing) {
+      event.preventDefault();
+      sendMessage(el.input.value);
+    }
+  });
+
+  el.input.addEventListener("input", () => {
+    autoGrow();
+    updateCount();
+  });
+
   el.suggestions.addEventListener("click", (event) => {
-    const prompt = event.target.dataset?.prompt;
+    const prompt = event.target.closest("[data-prompt]")?.dataset.prompt;
     if (prompt) sendMessage(prompt);
   });
 
   el.reset.addEventListener("click", async () => {
     const previous = sessionId;
     sessionId = newSessionId();
-    el.messages.replaceChildren();
+    el.thread.replaceChildren();
     hideBanner();
     addMessage("assistant", "New conversation started. What can I help you with?");
-    // Best-effort: free the old session server-side.
+    el.input.focus();
     try {
       await fetch(`/sessions/${previous}`, { method: "DELETE" });
     } catch {
-      /* the session expires on its own anyway */
+      /* best effort: the session expires on its own anyway */
     }
   });
 
   el.customer.addEventListener("change", () => {
-    const label = el.customer.selectedOptions[0]?.textContent ?? "Not signed in";
+    if (!el.customer.value) {
+      showBanner("Signed out. I can still answer general support questions.", "info");
+      return;
+    }
+    const label = el.customer.selectedOptions[0].textContent;
     showBanner(`Signed in as ${label}. Account answers come from the customer API.`, "info");
   });
 
   loadCustomers();
+  autoGrow();
   el.input.focus();
 })();
